@@ -21,7 +21,7 @@ const BucketView = (props: Props) => {
 							value={item.volume}
 							placeholder="add volume of bucket"
 							handleInputChange={handleInputChange}
-              step="0.01"
+              step="0.1"
               metric="cubic inches"
 						/>
 					);

@@ -30,8 +30,8 @@ const reducers = {
 
     state[action.payload.name] = {
       name: action.payload.name,
-      volume: parseFloat(parseFloat(volume.toString()).toFixed(2)),
-      space: parseFloat(parseFloat(space.toString()).toFixed(2)),
+      volume: parseFloat(parseFloat(volume.toString()).toFixed(1)),
+      space: parseFloat(parseFloat(space.toString()).toFixed(1)),
       balls: {}
     };
   },
@@ -52,7 +52,7 @@ const reducers = {
 
     state[name] = {
       ...state[name],
-      space: parseFloat(parseFloat(space.toString()).toFixed(2)),
+      space: parseFloat(parseFloat(space.toString()).toFixed(1)),
       balls: {
         ...state[name]["balls"],
         [color]: current_color + 1

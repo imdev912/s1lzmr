@@ -100,6 +100,7 @@ export default function App() {
 
     const ballKeys = Object.keys(ballLookup);
     const bucketKeys = Object.keys(bucketLookup);
+    let limit = ballKeys.length * bucketKeys.length;
 
     while (remainBalls > 0 && remainVolume > 0) {
       if (ballKeys.length < 1 || bucketKeys.length < 1) {
@@ -113,6 +114,21 @@ export default function App() {
         bucketKeys.splice(bucketKeys.indexOf(randomBucket), 1);
         delete bucketLookup[randomBucket];
         continue;
+      }
+
+      if (ballLookup[randomBall] <= 0) {
+        ballKeys.splice(ballKeys.indexOf(randomBall), 1)
+        delete ballLookup[randomBall];
+        continue;
+      }
+
+      if (bucketLookup[randomBucket] < volumeLookup[randomBall]) {
+        if (limit) {
+          limit--;
+          continue;
+        }
+
+        break;
       }
 
       while (bucketLookup[randomBucket] >= volumeLookup[randomBall]) {
@@ -149,7 +165,8 @@ export default function App() {
       Array.from(Array(bucket_count).keys()).map((value, index) => {
         dispatch(
           bucketActions.addBucket({
-            name: bucket[index]
+            name: bucket[index],
+            volume: 200
           })
         );
       });
@@ -161,7 +178,9 @@ export default function App() {
       Array.from(Array(color_count).keys()).map((value, index) => {
         dispatch(
           ballActions.addBall({
-            color: color[index]
+            color: color[index],
+            volume: 5,
+            count: 50
           })
         );
       });
@@ -269,7 +288,7 @@ export default function App() {
                           }
 
                           return acc;
-                        }, 0)}
+                        }, 0)} / {ball.count}
                       </td>
                     );
                   })}
