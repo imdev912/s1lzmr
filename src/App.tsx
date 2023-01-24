@@ -48,24 +48,31 @@ export default function App() {
       const count = isNaN(input) ? 0 : Math.max(0, Math.min(5, input));
       dispatch(appActions.updateColorCount({ count }));
     } else if (name.startsWith("bucket") && name.endsWith("volume")) {
+      const input = parseFloat(value);
+      const volume = isNaN(input) ? 0 : Math.max(0, Math.min(200, input));
+
       dispatch(
         bucketActions.addBucket({
           name: name.replace(/(bucket)|(volume)|(-)/g, ""),
-          volume: Math.max(0, parseFloat(value))
+          volume: volume
         })
       );
     } else if (name.startsWith("ball") && name.endsWith("volume")) {
+      const input = parseFloat(value);
+      const volume = isNaN(input) ? 0 : Math.max(0, Math.min(5, input));
       dispatch(
         ballActions.updateBallVolume({
           color: name.replace(/(ball)|(volume)|(-)/g, ""),
-          volume: Math.max(0, parseFloat(value))
+          volume: volume
         })
       );
     } else if (name.startsWith("ball") && name.endsWith("count")) {
+      const input = parseInt(value, 10);
+      const count = isNaN(input) ? 0 : Math.max(0, Math.min(50, input));
       dispatch(
         ballActions.updateBallCount({
           color: name.replace(/(ball)|(count)|(-)/g, ""),
-          count: Math.max(0, parseInt(value, 10))
+          count: count
         })
       );
     }
@@ -95,29 +102,44 @@ export default function App() {
     const bucketKeys = Object.keys(bucketLookup);
 
     while (remainBalls > 0 && remainVolume > 0) {
-      const randomBall = ballKeys[Math.floor(Math.random() * ballKeys.length)];
+      if (ballKeys.length < 1 || bucketKeys.length < 1) {
+        break;
+      }
 
-      if (ballLookup[randomBall] > 0) {
-        const randomBucket: string =
-          bucketKeys[Math.floor(Math.random() * bucketKeys.length)];
+      let randomBucket: string = bucketKeys[Math.floor(Math.random() * bucketKeys.length)];
+      let randomBall: string = ballKeys[Math.floor(Math.random() * ballKeys.length)];
 
-        if (
-          bucketLookup[randomBucket] > 0 &&
-          bucketLookup[randomBucket] >= volumeLookup[randomBall]
-        ) {
-          ballLookup[randomBall]--;
-          bucketLookup[randomBucket] -= volumeLookup[randomBall];
-          remainVolume -= volumeLookup[randomBall];
-          remainBalls--;
+      if (bucketLookup[randomBucket] <= 0) {
+        bucketKeys.splice(bucketKeys.indexOf(randomBucket), 1);
+        delete bucketLookup[randomBucket];
+        continue;
+      }
 
-          dispatch(
-            bucketActions.putBall({
-              name: randomBucket,
-              color: randomBall,
-              space: bucketLookup[randomBucket]
-            })
-          );
+      while (bucketLookup[randomBucket] >= volumeLookup[randomBall]) {
+        if (ballKeys.length < 1 || bucketKeys.length < 1) {
+          break;
         }
+
+        if (ballLookup[randomBall] <= 0) {
+          ballKeys.splice(ballKeys.indexOf(randomBall), 1)
+          delete ballLookup[randomBall];
+          break;
+        }
+
+        ballLookup[randomBall]--;
+        bucketLookup[randomBucket] -= volumeLookup[randomBall];
+        remainVolume -= volumeLookup[randomBall];
+        remainBalls--;
+
+        dispatch(
+          bucketActions.putBall({
+            name: randomBucket,
+            color: randomBall,
+            space: bucketLookup[randomBucket]
+          })
+        );
+
+        randomBall = ballKeys[Math.floor(Math.random() * ballKeys.length)];
       }
     }
   };
@@ -265,7 +287,12 @@ export default function App() {
 
                   <td>
                     {buckets.reduce((acc, curr) => {
-                      return curr.space ? acc + curr.space : acc;
+                      if (curr.space) {
+                        acc += curr.space;
+                        return parseFloat(parseFloat(acc.toString()).toFixed(2));
+                      }
+
+                      return acc;
                     }, 0)}
                   </td>
                 </tr>

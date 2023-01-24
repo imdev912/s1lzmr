@@ -20,6 +20,7 @@ const BallCount = (props: Props) => {
 							value={item.count}
 							placeholder="number of ball in bucket"
 							handleInputChange={handleInputChange}
+              step="1"
 						/>
 					);
 				})}

@@ -21,10 +21,13 @@ const reducers = {
       payload: Ball;
     }
   ) => {
+    const volume = action.payload.volume || 0;
+    const count = action.payload.count || 0;
+
     state[action.payload.color] = {
       color: action.payload.color,
-      volume: action.payload.volume,
-      count: action.payload.count
+      volume: parseFloat(parseFloat(volume.toString()).toFixed(2)),
+      count: parseInt(count.toString())
     };
   },
   updateBallVolume: (
@@ -34,7 +37,8 @@ const reducers = {
       payload: Ball;
     }
   ) => {
-    state[action.payload.color]["volume"] = action.payload.volume;
+    const volume = action.payload.volume || 0;
+    state[action.payload.color]["volume"] = parseFloat(parseFloat(volume.toString()).toFixed(2));
   },
   updateBallCount: (
     state: Balls,
@@ -43,7 +47,8 @@ const reducers = {
       payload: Ball;
     }
   ) => {
-    state[action.payload.color]["count"] = action.payload.count;
+    const count = action.payload.count || 0;
+    state[action.payload.color]["count"] = parseInt(count.toString());
   }
 };
 

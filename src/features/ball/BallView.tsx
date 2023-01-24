@@ -22,6 +22,8 @@ const BallView = (props: Props) => {
 							value={item.volume}
 							placeholder="add volume of ball"
 							handleInputChange={handleInputChange}
+              step="0.01"
+              metric="cubic inches"
 						/>
 					);
 				})}
