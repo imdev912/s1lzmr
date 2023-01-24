@@ -165,8 +165,7 @@ export default function App() {
       Array.from(Array(bucket_count).keys()).map((value, index) => {
         dispatch(
           bucketActions.addBucket({
-            name: bucket[index],
-            volume: 200
+            name: bucket[index]
           })
         );
       });
@@ -178,9 +177,7 @@ export default function App() {
       Array.from(Array(color_count).keys()).map((value, index) => {
         dispatch(
           ballActions.addBall({
-            color: color[index],
-            volume: 5,
-            count: 50
+            color: color[index]
           })
         );
       });
